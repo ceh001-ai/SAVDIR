@@ -1,0 +1,6 @@
+{
+  "name": "SAVDIR",
+  "description": "A personal learning dashboard to store, categorize, tag, and search learning notes with a beautiful, high-fidelity tabbed interface.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

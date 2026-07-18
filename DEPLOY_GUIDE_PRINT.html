@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SAVDIR Deployment & Setup Guide</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+    
+    :root {
+      --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: "JetBrains Mono", SFMono-Regular, Consolas, monospace;
+      --bg-color: #ffffff;
+      --text-color: #1a1a1a;
+      --text-muted: #666666;
+      --border-color: #e5e5e5;
+      --accent-color: #000000;
+      --highlight-bg: #f9f9f9;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      line-height: 1.6;
+      padding: 3rem 2rem;
+      max-width: 800px;
+      margin: 0 auto;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    /* Print styling rules */
+    @media print {
+      body {
+        padding: 0;
+        max-width: 100%;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .page-break {
+        page-break-before: always;
+      }
+    }
+
+    /* Header Styling */
+    header {
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 2rem;
+      margin-bottom: 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .brand-title {
+      font-size: 2.2rem;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      text-transform: uppercase;
+    }
+
+    .brand-subtitle {
+      font-size: 0.8rem;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      margin-top: 0.25rem;
+    }
+
+    .doc-type {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      background: var(--accent-color);
+      color: white;
+      padding: 0.4rem 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      border-radius: 3px;
+    }
+
+    /* Introduction & Overview */
+    .intro-box {
+      background: var(--highlight-bg);
+      border-left: 4px solid var(--accent-color);
+      padding: 1.5rem;
+      margin-bottom: 3rem;
+      border-radius: 0 4px 4px 0;
+    }
+
+    .intro-box p {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+    }
+
+    /* Print Prompt Banner */
+    .print-banner {
+      background: #f1f1f1;
+      border: 1px solid var(--border-color);
+      padding: 1rem;
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2.5rem;
+      font-size: 0.85rem;
+    }
+
+    .print-button {
+      background: var(--accent-color);
+      color: #fff;
+      border: none;
+      padding: 0.5rem 1rem;
+      font-family: var(--font-sans);
+      font-weight: 600;
+      font-size: 0.8rem;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .print-button:hover {
+      opacity: 0.8;
+    }
+
+    /* Section & Steps List */
+    h2 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .step-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2.5rem;
+    }
+
+    .step-card {
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 2rem;
+      position: relative;
+      background-color: #ffffff;
+      transition: box-shadow 0.2s ease;
+    }
+
+    .step-num-badge {
+      position: absolute;
+      top: -18px;
+      left: 20px;
+      background: var(--accent-color);
+      color: white;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 0.9rem;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 0 4px white;
+    }
+
+    .step-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      margin-top: 0.25rem;
+      color: var(--text-color);
+    }
+
+    .step-content p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+    }
+
+    /* Code Blocks */
+    code, pre {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+    }
+
+    code {
+      background-color: var(--highlight-bg);
+      padding: 0.2rem 0.4rem;
+      border-radius: 3px;
+      color: #333;
+    }
+
+    pre {
+      background-color: #111111;
+      color: #eaeaea;
+      padding: 1.25rem;
+      border-radius: 6px;
+      overflow-x: auto;
+      margin: 0.75rem 0 1.25rem 0;
+      line-height: 1.4;
+      position: relative;
+    }
+
+    pre code {
+      background: none;
+      color: inherit;
+      padding: 0;
+    }
+
+    /* List inside step */
+    .step-sublist {
+      list-style-type: none;
+      margin-left: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .step-sublist li {
+      position: relative;
+      padding-left: 1.25rem;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .step-sublist li::before {
+      content: "→";
+      position: absolute;
+      left: 0;
+      color: var(--accent-color);
+      font-weight: bold;
+    }
+
+    /* Danger / Callout Banner */
+    .callout-warning {
+      border: 1px solid #ffe4e6;
+      background-color: #fff1f2;
+      border-left: 4px solid #f43f5e;
+      padding: 1.25rem;
+      border-radius: 4px;
+      margin-top: 2rem;
+    }
+
+    .callout-warning h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #be123c;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .callout-warning p {
+      font-size: 0.85rem;
+      color: #9f1239;
+      line-height: 1.5;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border-color);
+      margin-top: 4rem;
+      padding-top: 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.75rem;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Printable Top Utilities bar -->
+  <div class="print-banner no-print">
+    <span>💡 <strong>Quick Tip:</strong> Click the "Save as PDF" button or press <strong>Ctrl+P</strong> / <strong>Cmd+P</strong> to export this page cleanly into a PDF guide.</span>
+    <button class="print-button" onclick="window.print()">Save as PDF</button>
+  </div>
+
+  <header>
+    <div>
+      <h1 class="brand-title">SAVDIR</h1>
+      <p class="brand-subtitle">Deployment & Setup Companion</p>
+    </div>
+    <div class="doc-type">OFFICIAL PDF MANUAL</div>
+  </header>
+
+  <div class="intro-box">
+    <p>
+      This manual outlines the precise <strong>6-Step Deployment Protocol</strong> to configure, host, and publish your personal learning hub (<strong>SAVDIR</strong>) on your private GitHub account. Follow this guide to activate your cloud deployment pipeline with continuous updates using GitHub Actions.
+    </p>
+  </div>
+
+  <h2>📦 Step-by-Step Deployment Runbook</h2>
+
+  <div class="step-list">
+    
+    <!-- Step 1 -->
+    <div class="step-card">
+      <div class="step-num-badge">01</div>
+      <div class="step-title">Extract the Downloaded Workspace ZIP</div>
+      <div class="step-content">
+        <p>Locate the downloaded archive from Google AI Studio (usually named with the project workspace ID).</p>
+        <ul class="step-sublist">
+          <li>Right-click the file and select <strong>Extract All...</strong> or use terminal commands.</li>
+          <li>Store the extracted files in a neat, permanent workspace folder (e.g., <code>Documents/SAVDIR</code>).</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="step-card">
+      <div class="step-num-badge">02</div>
+      <div class="step-title">Initialize Git Control Locally</div>
+      <div class="step-content">
+        <p>Open your local shell (macOS Terminal, Git Bash, or Windows Command Prompt) and target the directory:</p>
+        <pre><code>cd path/to/your/extracted/SAVDIR-folder</code></pre>
+        <p>Initialize git with the standard master branch name <code>main</code>:</p>
+        <pre><code>git init -b main</code></pre>
+      </div>
+    </div>
+
+    <!-- Step 3 -->
+    <div class="step-card">
+      <div class="step-num-badge">03</div>
+      <div class="step-title">Create a Blank GitHub Repository</div>
+      <div class="step-content">
+        <p>Open your web browser and navigate to <a href="https://github.com" target="_blank" rel="noopener noreferrer">github.com</a>.</p>
+        <ul class="step-sublist">
+          <li>Click the <strong>"+"</strong> button in the top right, select <strong>New repository</strong>.</li>
+          <li>Set the name to <code>SAVDIR</code> <em>(using lowercase is fine too)</em>.</li>
+          <li>Make sure the repository visibility is set to <strong>Public</strong>.</li>
+          <li>Leave <strong>Add README file</strong>, <strong>Add .gitignore</strong>, and <strong>Choose a license</strong> completely <strong>unchecked</strong>.</li>
+          <li>Click <strong>Create repository</strong> and copy the generated SSH or HTTPS clone URL.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- Step 4 -->
+    <div class="step-card" style="margin-top: 2.5rem;">
+      <div class="step-num-badge">04</div>
+      <div class="step-title">Link & Push Local Assets to GitHub</div>
+      <div class="step-content">
+        <p>Add all source files to the local staging index, commit, and link to GitHub:</p>
+        <pre><code>git add .
+git commit -m "Initial commit: SAVDIR Personal Learning Hub"</code></pre>
+        <p>Bind the remote URL and push (replace the URL below with your actual copied URL):</p>
+        <pre><code>git remote add origin https://github.com/YOUR_USERNAME/SAVDIR.git
+git push -u origin main</code></pre>
+      </div>
+    </div>
+
+    <!-- Step 5 -->
+    <div class="step-card">
+      <div class="step-num-badge">05</div>
+      <div class="step-title">Configure GitHub Actions Permissions</div>
+      <div class="step-content">
+        <p>To let the workflow compile code and push the compiled web app bundle to your hosting branch automatically, configure the write permission:</p>
+        <ul class="step-sublist">
+          <li>Go to the **Settings** tab on your GitHub repository page.</li>
+          <li>Under the "Security" menu in the left sidebar, click on **Actions** &rarr; **General**.</li>
+          <li>Scroll to the bottom of the page to find the **Workflow permissions** block.</li>
+          <li>Check **Read and write permissions**.</li>
+          <li>Click **Save** to apply.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Step 6 -->
+    <div class="step-card">
+      <div class="step-num-badge">06</div>
+      <div class="step-title">Set Hosting Branch & View Live Web App</div>
+      <div class="step-content">
+        <p>Once your workspace files are uploaded, the GitHub Actions deployment workflow will build the static index automatically. After the action completes:</p>
+        <ul class="step-sublist">
+          <li>Navigate to repository **Settings** &rarr; **Pages** in the left sidebar.</li>
+          <li>Under "Build and deployment" &rarr; "Source", choose **Deploy from a branch**.</li>
+          <li>Select **<code>gh-pages</code>** from the branch dropdown, then click **Save**.</li>
+          <li>Wait a few seconds. Refresh the page to see your live URL at the top of the tab!</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="callout-warning">
+    <h3>⚠️ Crucial Base URL Instruction</h3>
+    <p>
+      GitHub Pages serves user websites in a subfolder relative to your repository name (e.g., <code>https://yourusername.github.io/SAVDIR/</code>). Your app is pre-configured with a base URL matching <code>SAVDIR</code>. If you name your repository anything else (e.g., <code>my-notes</code>), you <strong>must</strong> open <code>vite.config.ts</code> and update the <code>base: '/SAVDIR/'</code> line to match your exact repository name, then commit and push the change.
+    </p>
+  </div>
+
+  <footer>
+    <span>SAVDIR LEARNING ENGINE</span>
+    <span>&copy; 2026</span>
+  </footer>
+
+</body>
+</html>
